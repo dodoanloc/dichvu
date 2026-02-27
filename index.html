@@ -464,14 +464,14 @@
             tableName: 'Table 1'
         };
         
-        // Format currency input with thousands separator
+        // Format currency input with thousands separator (comma)
         function formatCurrency(input) {
             // Remove all non-digit characters
             let value = input.value.replace(/\D/g, '');
             
-            // Format with thousands separator
+            // Format with comma as thousands separator
             if (value) {
-                value = parseInt(value).toLocaleString('vi-VN');
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
             
             input.value = value;
@@ -479,7 +479,8 @@
         
         // Parse currency string back to number
         function parseCurrency(value) {
-            return parseInt(value.replace(/\./g, '')) || 0;
+            // Remove dots (thousands separator) and parse
+            return parseInt(value.replace(/\./g, '').replace(/,/g, '')) || 0;
         }
         
         // Load saved staff selection from localStorage

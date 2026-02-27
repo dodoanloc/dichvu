@@ -284,6 +284,11 @@
         // Store data for export
         let customerData = [];
         let filteredData = [];
+        
+        // Format number with comma as thousands separator
+        function formatNumberWithComma(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
 
         // Initialize date filters
         function initializeDateFilters() {
@@ -371,7 +376,7 @@
                         loaiDichVu = loaiDichVu.join(', ');
                     }
 
-                    const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']).toLocaleString('vi-VN') : '0';
+                    const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
 
                     tbody.innerHTML += `
                         <tr>
@@ -485,7 +490,7 @@
                     loaiDichVu = loaiDichVu.join(', ');
                 }
 
-                const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']).toLocaleString('vi-VN') : '0';
+                const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
 
                 return {
                     'STT': index + 1,
