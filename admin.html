@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý dữ liệu khách hàng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .refresh-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #45a049;
+        }
+        
+        .export-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            margin-left: 10px;
+        }
+        
+        .export-btn:hover {
+            background: #1976D2;
+        }
+        
+        .export-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .config-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .config-box code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .filter-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-box label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .filter-box input[type="date"] {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-box input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+        
+        .filter-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .filter-info {
+            color: #666;
+            font-size: 13px;
+            width: 100%;
+        }
+    </style>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Quản lý dữ liệu khách hàng</h1>
+        
+        <div id="configMessage" class="config-box" style="display: none;">
+            ⚠️ <strong>Chưa cấu hình Base ID!</strong><br>
+            Vui lòng cập nhật <code>baseId</code> trong file <code>admin.html</code>.
+            Xem hướng dẫn trong <a href="README.md">README.md</a>.
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">-</div>
+                <div class="stat-label">Tổng số khách hàng</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayCount">-</div>
+                <div class="stat-label">Đăng ký hôm nay</div>
+            </div>
+        </div>
+        
+        <button class="refresh-btn" onclick="loadData()">🔄 Làm mới dữ liệu</button>
+        <button class="export-btn" id="exportBtn" onclick="exportToExcel()" disabled>📥 Xuất Excel (.xls)</button>
+        
+        <div class="filter-box">
+            <label>📅 Từ ngày:</label>
+            <input type="date" id="fromDate" onchange="applyDateFilter()">
+            <label>Đến ngày:</label>
+            <input type="date" id="toDate" onchange="applyDateFilter()">
+            <button class="filter-btn" onclick="resetDateFilter()">↩️ Đặt lại</button>
+            <div class="filter-info" id="filterInfo"></div>
+        </div>
+        
+        <div id="loading" class="loading">Đang tải dữ liệu...⏳</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="tableContainer" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Loại đăng ký</th>
+                        <th>Số tài khoản</th>
+                        <th>Số điện thoại</th>
+                        <th>Tên khách hàng</th>
+                        <th>Cán bộ quản lý</th>
+                        <th>Ghi chú</th>
+                        <th>Ngày đăng ký</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <a href="index.html" class="back-link">← Quay lại trang đăng ký</a>
+    </div>
+    
+    <script>
+        // Store data for export
+        let customerData = [];
+        let filteredData = [];
+        
+        // Initialize date filters
+        function initializeDateFilters() {
+            const today = new Date();
+            const sevenDaysAgo = new Date(today);
+            sevenDaysAgo.setDate(today.getDate() - 7);
+            
+            // Format date as YYYY-MM-DD for input
+            const formatDate = (date) => {
+                return date.toISOString().split('T')[0];
+            };
+            
+            document.getElementById('toDate').value = formatDate(today);
+            document.getElementById('fromDate').value = formatDate(sevenDaysAgo);
+            
+            updateFilterInfo();
+        }
+        
+        // Apply date filter
+        function applyDateFilter() {
+            const fromDateStr = document.getElementById('fromDate').value;
+            const toDateStr = document.getElementById('toDate').value;
+            
+            if (!fromDateStr || !toDateStr) {
+                filteredData = customerData;
+            } else {
+                const fromDate = new Date(fromDateStr);
+                fromDate.setHours(0, 0, 0, 0);
+                
+                const toDate = new Date(toDateStr);
+                toDate.setHours(23, 59, 59, 999);
+                
+                filteredData = customerData.filter(record => {
+                    const recordDate = new Date(record.createdTime);
+                    return recordDate >= fromDate && recordDate <= toDate;
+                });
+            }
+            
+            updateFilterInfo();
+            renderTable(filteredData);
+        }
+        
+        // Reset date filter
+        function resetDateFilter() {
+            initializeDateFilters();
+            applyDateFilter();
+        }
+        
+        // Update filter info text
+        function updateFilterInfo() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const infoDiv = document.getElementById('filterInfo');
+            
+            if (fromDate && toDate) {
+                const formatDisplay = (dateStr) => {
+                    const [year, month, day] = dateStr.split('-');
+                    return `${day}/${month}/${year}`;
+                };
+                infoDiv.innerHTML = `📊 Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng từ <strong>${formatDisplay(fromDate)}</strong> đến <strong>${formatDisplay(toDate)}</strong>`;
+            } else {
+                infoDiv.innerHTML = '';
+            }
+        }
+        
+        // Render table with data
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Không có dữ liệu trong khoảng thờii gian này</td></tr>';
+            } else {
+                // Sort by createdTime manually (newest first)
+                data.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+                
+                data.forEach(record => {
+                    const fields = record.fields;
+                    const date = record.createdTime 
+                        ? new Date(record.createdTime).toLocaleString('vi-VN')
+                        : 'N/A';
+                    
+                    let loaiDangKy = fields['Loại đăng ký'] || 'N/A';
+                    if (Array.isArray(loaiDangKy)) {
+                        loaiDangKy = loaiDangKy.join(', ');
+                    }
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${record.id.slice(0, 10)}...</td>
+                            <td>${loaiDangKy}</td>
+                            <td>${fields['Số tài khoản'] || fields['account_number'] || 'N/A'}</td>
+                            <td>${fields['Số điện thoại'] || fields['phone'] || 'N/A'}</td>
+                            <td>${fields['Tên khách hàng'] || fields['customer_name'] || 'N/A'}</td>
+                            <td>${fields['Cán bộ quản lý'] || 'N/A'}</td>
+                            <td>${fields['Ghi chú'] || ''}</td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+        
+        // Airtable Configuration - UPDATE THESE VALUES
+        const AIRTABLE_CONFIG = {
+            apiKey: 'YOUR_AIRTABLE_TOKEN_HERE',  // Thay bằng token của bạn
+            baseId: 'YOUR_BASE_ID_HERE',         // Thay bằng Base ID của bạn
+            tableId: 'YOUR_TABLE_ID_HERE',       // Thay bằng Table ID của bạn
+            tableName: 'Customers'
+        };
+        
+        async function loadData() {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const tableContainer = document.getElementById('tableContainer');
+            const configMessage = document.getElementById('configMessage');
+            const exportBtn = document.getElementById('exportBtn');
+            
+            // Disable export button while loading
+            exportBtn.disabled = true;
+            
+            // Check if baseId is configured
+            if (!AIRTABLE_CONFIG.baseId) {
+                configMessage.style.display = 'block';
+                loading.style.display = 'none';
+                return;
+            }
+            
+            configMessage.style.display = 'none';
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            tableContainer.style.display = 'none';
+            
+            try {
+                // Fetch data from Airtable - no sort parameter to avoid field name issues
+                const response = await fetch(
+                    `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'Không thể tải dữ liệu');
+                }
+                
+                const data = await response.json();
+                
+                // Store data for export
+                customerData = data.records;
+                filteredData = data.records;
+                
+                // Enable export button
+                exportBtn.disabled = false;
+                
+                // Update stats (total count)
+                document.getElementById('totalCount').textContent = data.records.length;
+                
+                // Count today's registrations
+                const today = new Date().toDateString();
+                const todayCount = data.records.filter(r => {
+                    const date = new Date(r.createdTime);
+                    return date.toDateString() === today;
+                }).length;
+                document.getElementById('todayCount').textContent = todayCount;
+                
+                // Apply date filter and render
+                applyDateFilter();
+                
+                tableContainer.style.display = 'block';
+                
+            } catch (err) {
+                error.textContent = '❌ ' + err.message;
+                error.style.display = 'block';
+                console.error('Error:', err);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        // Export to Excel function
+        function exportToExcel() {
+            const dataToExport = filteredData.length > 0 ? filteredData : customerData;
+            
+            if (dataToExport.length === 0) {
+                alert('Không có dữ liệu để xuất!');
+                return;
+            }
+            
+            // Prepare data for Excel
+            const excelData = dataToExport.map(record => {
+                const fields = record.fields;
+                let loaiDangKy = fields['Loại đăng ký'] || 'N/A';
+                if (Array.isArray(loaiDangKy)) {
+                    loaiDangKy = loaiDangKy.join(', ');
+                }
+                
+                return {
+                    'ID': record.id,
+                    'Loại đăng ký': loaiDangKy,
+                    'Số tài khoản': fields['Số tài khoản'] || fields['account_number'] || '',
+                    'Số điện thoại': fields['Số điện thoại'] || fields['phone'] || '',
+                    'Tên khách hàng': fields['Tên khách hàng'] || fields['customer_name'] || '',
+                    'Cán bộ quản lý': fields['Cán bộ quản lý'] || '',
+                    'Ghi chú': fields['Ghi chú'] || '',
+                    'Ngày đăng ký': record.createdTime ? new Date(record.createdTime).toLocaleString('vi-VN') : ''
+                };
+            });
+            
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            
+            // Set column widths
+            ws['!cols'] = [
+                { wch: 25 },  // ID
+                { wch: 20 },  // Loại đăng ký
+                { wch: 18 },  // Số tài khoản
+                { wch: 15 },  // Số điện thoại
+                { wch: 30 },  // Tên khách hàng
+                { wch: 25 },  // Cán bộ quản lý
+                { wch: 40 },  // Ghi chú
+                { wch: 20 }   // Ngày đăng ký
+            ];
+            
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Danh sách KH');
+            
+            // Generate filename with current date
+            const today = new Date().toISOString().split('T')[0];
+            const filename = `Danh_sach_KH_${today}.xlsx`;
+            
+            // Download file
+            XLSX.writeFile(wb, filename);
+        }
+        
+        // Load data on page load
+        loadData();
+        
+        // Initialize date filters
+        initializeDateFilters();
+    </script>
+</body>
+</html>
