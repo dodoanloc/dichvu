@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký thông tin QR Tài khoản/Loa Thần Tài</title>
+    <title>Đăng ký thông tin dịch vụ Agribank</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap');
         
@@ -326,8 +326,8 @@
     <div class="deco">🌟</div>
     
     <div class="container">
-        <div class="icon">💳🔊</div>
-        <h1>Đăng ký thông tin<br>QR Tài khoản/Loa Thần Tài</h1>
+        <div class="icon">💰📝</div>
+        <h1>Đăng ký thông tin<br>Dịch vụ Agribank</h1>
         <p class="subtitle">Nhanh chóng - Tiện lợi - An toàn</p>
         
         <div id="message" class="message"></div>
@@ -339,15 +339,23 @@
         
         <form id="registrationForm">
             <div class="form-group">
-                <label for="loai_dang_ky">Loại đăng ký <span class="required">*</span></label>
+                <label for="loai_dich_vu">Loại dịch vụ <span class="required">*</span></label>
                 <select 
-                    id="loai_dang_ky" 
-                    name="loai_dang_ky" 
+                    id="loai_dich_vu" 
+                    name="loai_dich_vu" 
                     required
                 >
-                    <option value="">-- Chọn loại đăng ký --</option>
-                    <option value="QR Tài khoản">💳 QR Tài khoản</option>
-                    <option value="Loa Thần Tài">🔊 Loa Thần Tài</option>
+                    <option value="">-- Chọn loại dịch vụ --</option>
+                    <option value="TKTT hoạt động">TKTT hoạt động</option>
+                    <option value="eBanking">eBanking</option>
+                    <option value="Đơn vị trả lương">Đơn vị trả lương</option>
+                    <option value="Bảo an tài khoản">Bảo an tài khoản</option>
+                    <option value="Bảo an chủ thẻ">Bảo an chủ thẻ</option>
+                    <option value="FWD">FWD</option>
+                    <option value="Hóa đơn điện nước">Hóa đơn điện nước</option>
+                    <option value="Số đẹp">Số đẹp</option>
+                    <option value="Nickname">Nickname</option>
+                    <option value="Khác">Khác</option>
                 </select>
             </div>
             
@@ -365,37 +373,36 @@
             </div>
             
             <div class="form-group">
-                <label for="phone">Số điện thoại <span class="required">*</span></label>
+                <label for="so_tien">Số tiền <span class="required">*</span></label>
                 <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="Nhập số điện thoại..." 
+                    type="text" 
+                    id="so_tien" 
+                    name="so_tien" 
+                    placeholder="Nhập số tiền..." 
                     required
-                    pattern="[0-9]{10,11}"
-                    title="Số điện thoại phải có 10-11 số"
+                    pattern="[0-9]+"
+                    title="Vui lòng chỉ nhập số"
                 >
             </div>
             
             <div class="form-group">
-                <label for="customer_name">Tên khách hàng <span class="required">*</span></label>
+                <label for="customer_name">Tên khách hàng</label>
                 <input 
                     type="text" 
                     id="customer_name" 
                     name="customer_name" 
-                    placeholder="Nhập tên khách hàng..." 
-                    required
+                    placeholder="Nhập tên khách hàng (không bắt buộc)..."
                 >
             </div>
             
             <div class="form-group">
-                <label for="can_bo_quan_ly">Cán bộ quản lý <span class="required">*</span></label>
+                <label for="ten_can_bo">Tên cán bộ <span class="required">*</span></label>
                 <select 
-                    id="can_bo_quan_ly" 
-                    name="can_bo_quan_ly" 
+                    id="ten_can_bo" 
+                    name="ten_can_bo" 
                     required
                 >
-                    <option value="">-- Chọn cán bộ quản lý --</option>
+                    <option value="">-- Chọn cán bộ --</option>
                     <option value="Đàm Thị Thu Phương">Đàm Thị Thu Phương</option>
                     <option value="Đặng Thị Hảo">Đặng Thị Hảo</option>
                     <option value="Đỗ Doãn Lộc">Đỗ Doãn Lộc</option>
@@ -441,16 +448,6 @@
                 </select>
             </div>
             
-            <div class="form-group">
-                <label for="ghi_chu">Ghi chú</label>
-                <input 
-                    type="text" 
-                    id="ghi_chu" 
-                    name="ghi_chu" 
-                    placeholder="Nhập ghi chú nếu có..."
-                >
-            </div>
-            
             <button type="submit" id="submitBtn">🚀 Đăng ký ngay</button>
         </form>
         
@@ -460,20 +457,19 @@
     </div>
     
     <script>
-        // Airtable Configuration - UPDATE THESE VALUES
+        // Airtable Configuration
         const AIRTABLE_CONFIG = {
-            apiKey: 'YOUR_AIRTABLE_TOKEN_HERE',  // Thay bằng token của bạn
-            baseId: 'YOUR_BASE_ID_HERE',         // Thay bằng Base ID của bạn
-            tableId: 'YOUR_TABLE_ID_HERE',       // Thay bằng Table ID của bạn
-            tableName: 'Customers'
+            apiKey: 'YOUR_AIRTABLE_TOKEN_HERE',
+            baseId: 'appDsL5ChJpaePTCo',
+            tableId: 'tblFFkjKg2zifzCGs',
+            tableName: 'Table 1'
         };
         
         // Load saved staff selection from localStorage
         document.addEventListener('DOMContentLoaded', function() {
-            const savedStaff = localStorage.getItem('can_bo_quan_ly');
+            const savedStaff = localStorage.getItem('ten_can_bo');
             if (savedStaff) {
-                const select = document.getElementById('can_bo_quan_ly');
-                // Check if the saved value exists in options
+                const select = document.getElementById('ten_can_bo');
                 for (let i = 0; i < select.options.length; i++) {
                     if (select.options[i].value === savedStaff) {
                         select.value = savedStaff;
@@ -499,15 +495,15 @@
             
             // Get form values
             const accountNumber = document.getElementById('account_number').value.trim();
-            const loaiDangKy = document.getElementById('loai_dang_ky').value;
+            const loaiDichVu = document.getElementById('loai_dich_vu').value;
             
             // Disable button
             submitBtn.disabled = true;
             submitBtn.textContent = '⏳ Đang kiểm tra...';
             
             try {
-                // Check for duplicate: Same account number + same registration type
-                const filterFormula = `AND({Số tài khoản} = "${accountNumber}", {Loại đăng ký} = "${loaiDangKy}")`;
+                // Check for duplicate: Same account number + same service type
+                const filterFormula = `AND({Số tài khoản} = "${accountNumber}", {Loại dịch vụ} = "${loaiDichVu}")`;
                 const checkResponse = await fetch(
                     `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}?filterByFormula=${encodeURIComponent(filterFormula)}&maxRecords=1`,
                     {
@@ -525,7 +521,7 @@
                 
                 if (checkData.records.length > 0) {
                     messageDiv.className = 'message error';
-                    messageDiv.innerHTML = `⚠️ <strong>Số tài khoản ${accountNumber}</strong> đã đăng ký "${loaiDangKy}" rồi!<br>Vui lòng chọn loại khác.`;
+                    messageDiv.innerHTML = `⚠️ <strong>Số tài khoản ${accountNumber}</strong> đã đăng ký "${loaiDichVu}" rồi!<br>Vui lòng chọn loại dịch vụ khác.`;
                     submitBtn.disabled = false;
                     submitBtn.textContent = '🚀 Đăng ký ngay';
                     return;
@@ -537,12 +533,11 @@
                 // Get form data
                 const formData = {
                     fields: {
-                        'Loại đăng ký': loaiDangKy,
+                        'Loại dịch vụ': loaiDichVu,
                         'Số tài khoản': accountNumber,
-                        'Số điện thoại': document.getElementById('phone').value,
-                        'Tên khách hàng': document.getElementById('customer_name').value,
-                        'Cán bộ quản lý': document.getElementById('can_bo_quan_ly').value,
-                        'Ghi chú': document.getElementById('ghi_chu').value || ''
+                        'Số tiền': parseInt(document.getElementById('so_tien').value) || 0,
+                        'Tên khách hàng': document.getElementById('customer_name').value || '',
+                        'Tên cán bộ': document.getElementById('ten_can_bo').value
                     }
                 };
                 
@@ -558,15 +553,15 @@
                 
                 if (response.ok) {
                     // Save staff selection to localStorage
-                    const savedStaff = document.getElementById('can_bo_quan_ly').value;
-                    localStorage.setItem('can_bo_quan_ly', savedStaff);
+                    const savedStaff = document.getElementById('ten_can_bo').value;
+                    localStorage.setItem('ten_can_bo', savedStaff);
                     
                     messageDiv.className = 'message success';
                     messageDiv.innerHTML = '✨ <strong>Đăng ký thành công!</strong><br>Thông tin đã được lưu.';
                     document.getElementById('registrationForm').reset();
                     
                     // Restore staff selection after reset
-                    document.getElementById('can_bo_quan_ly').value = savedStaff;
+                    document.getElementById('ten_can_bo').value = savedStaff;
                     
                     setTimeout(() => {
                         window.location.href = 'thank-you.html';

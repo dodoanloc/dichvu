@@ -264,12 +264,11 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Loại đăng ký</th>
+                        <th>Loại dịch vụ</th>
                         <th>Số tài khoản</th>
-                        <th>Số điện thoại</th>
+                        <th>Số tiền</th>
                         <th>Tên khách hàng</th>
-                        <th>Cán bộ quản lý</th>
-                        <th>Ghi chú</th>
+                        <th>Tên cán bộ</th>
                         <th>Ngày đăng ký</th>
                     </tr>
                 </thead>
@@ -356,7 +355,7 @@
             tbody.innerHTML = '';
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Không có dữ liệu trong khoảng thờii gian này</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu trong khoảng thờii gian này</td></tr>';
             } else {
                 // Sort by createdTime manually (newest first)
                 data.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
@@ -367,20 +366,21 @@
                         ? new Date(record.createdTime).toLocaleString('vi-VN')
                         : 'N/A';
                     
-                    let loaiDangKy = fields['Loại đăng ký'] || 'N/A';
-                    if (Array.isArray(loaiDangKy)) {
-                        loaiDangKy = loaiDangKy.join(', ');
+                    let loaiDichVu = fields['Loại dịch vụ'] || 'N/A';
+                    if (Array.isArray(loaiDichVu)) {
+                        loaiDichVu = loaiDichVu.join(', ');
                     }
+                    
+                    const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']).toLocaleString('vi-VN') : '0';
                     
                     tbody.innerHTML += `
                         <tr>
                             <td>${record.id.slice(0, 10)}...</td>
-                            <td>${loaiDangKy}</td>
-                            <td>${fields['Số tài khoản'] || fields['account_number'] || 'N/A'}</td>
-                            <td>${fields['Số điện thoại'] || fields['phone'] || 'N/A'}</td>
-                            <td>${fields['Tên khách hàng'] || fields['customer_name'] || 'N/A'}</td>
-                            <td>${fields['Cán bộ quản lý'] || 'N/A'}</td>
-                            <td>${fields['Ghi chú'] || ''}</td>
+                            <td>${loaiDichVu}</td>
+                            <td>${fields['Số tài khoản'] || 'N/A'}</td>
+                            <td>${soTien}</td>
+                            <td>${fields['Tên khách hàng'] || ''}</td>
+                            <td>${fields['Tên cán bộ'] || 'N/A'}</td>
                             <td>${date}</td>
                         </tr>
                     `;
@@ -388,12 +388,12 @@
             }
         }
         
-        // Airtable Configuration - UPDATE THESE VALUES
+        // Airtable Configuration
         const AIRTABLE_CONFIG = {
-            apiKey: 'YOUR_AIRTABLE_TOKEN_HERE',  // Thay bằng token của bạn
-            baseId: 'YOUR_BASE_ID_HERE',         // Thay bằng Base ID của bạn
-            tableId: 'YOUR_TABLE_ID_HERE',       // Thay bằng Table ID của bạn
-            tableName: 'Customers'
+            apiKey: 'YOUR_AIRTABLE_TOKEN_HERE',
+            baseId: 'appDsL5ChJpaePTCo',
+            tableId: 'tblFFkjKg2zifzCGs',
+            tableName: 'Table 1'
         };
         
         async function loadData() {
@@ -480,19 +480,20 @@
             // Prepare data for Excel
             const excelData = dataToExport.map(record => {
                 const fields = record.fields;
-                let loaiDangKy = fields['Loại đăng ký'] || 'N/A';
-                if (Array.isArray(loaiDangKy)) {
-                    loaiDangKy = loaiDangKy.join(', ');
+                let loaiDichVu = fields['Loại dịch vụ'] || 'N/A';
+                if (Array.isArray(loaiDichVu)) {
+                    loaiDichVu = loaiDichVu.join(', ');
                 }
+                
+                const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']).toLocaleString('vi-VN') : '0';
                 
                 return {
                     'ID': record.id,
-                    'Loại đăng ký': loaiDangKy,
-                    'Số tài khoản': fields['Số tài khoản'] || fields['account_number'] || '',
-                    'Số điện thoại': fields['Số điện thoại'] || fields['phone'] || '',
-                    'Tên khách hàng': fields['Tên khách hàng'] || fields['customer_name'] || '',
-                    'Cán bộ quản lý': fields['Cán bộ quản lý'] || '',
-                    'Ghi chú': fields['Ghi chú'] || '',
+                    'Loại dịch vụ': loaiDichVu,
+                    'Số tài khoản': fields['Số tài khoản'] || '',
+                    'Số tiền': soTien,
+                    'Tên khách hàng': fields['Tên khách hàng'] || '',
+                    'Tên cán bộ': fields['Tên cán bộ'] || '',
                     'Ngày đăng ký': record.createdTime ? new Date(record.createdTime).toLocaleString('vi-VN') : ''
                 };
             });
@@ -503,12 +504,11 @@
             // Set column widths
             ws['!cols'] = [
                 { wch: 25 },  // ID
-                { wch: 20 },  // Loại đăng ký
+                { wch: 20 },  // Loại dịch vụ
                 { wch: 18 },  // Số tài khoản
-                { wch: 15 },  // Số điện thoại
+                { wch: 15 },  // Số tiền
                 { wch: 30 },  // Tên khách hàng
-                { wch: 25 },  // Cán bộ quản lý
-                { wch: 40 },  // Ghi chú
+                { wch: 25 },  // Tên cán bộ
                 { wch: 20 }   // Ngày đăng ký
             ];
             
