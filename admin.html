@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý dữ liệu khách hàng</title>
+    <title>Quản lý dữ liệu - Agribank</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,7 +14,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
             background: #f5f7fa;
             padding: 20px;
             min-height: 100vh;
@@ -23,36 +25,52 @@
             margin: 0 auto;
         }
 
-        h1 {
+        .header {
             text-align: center;
-            color: #333;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E31937;
+        }
+
+        .header h1 {
+            color: #1a1a2e;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
         .stat-card {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             text-align: center;
+            border-left: 4px solid #E31937;
         }
 
         .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 32px;
+            font-weight: 700;
+            color: #E31937;
         }
 
         .stat-label {
             color: #666;
             margin-top: 5px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .loading {
@@ -62,37 +80,39 @@
         }
 
         .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 10px;
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
             margin-bottom: 20px;
+            border: 1px solid #ef9a9a;
         }
 
         table {
             width: 100%;
             background: white;
-            border-radius: 15px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             border-collapse: collapse;
+            font-size: 14px;
         }
 
         th, td {
-            padding: 15px;
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #e0e0e0;
         }
 
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #E31937;
             color: white;
             font-weight: 600;
         }
 
         tr:hover {
-            background: #f8f9ff;
+            background: #f5f5f5;
         }
 
         .no-data {
@@ -104,57 +124,67 @@
         .back-link {
             display: inline-block;
             margin-top: 20px;
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 10px 20px;
+            background: white;
+            color: #E31937;
             text-decoration: none;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
+            border-radius: 6px;
+            border: 1px solid #E31937;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .back-link:hover {
-            transform: translateY(-2px);
+            background: #E31937;
+            color: white;
         }
 
         .refresh-btn {
-            background: #4CAF50;
+            background: #E31937;
             color: white;
             border: none;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             margin-bottom: 20px;
+            font-weight: 500;
+            font-family: inherit;
         }
 
         .refresh-btn:hover {
-            background: #45a049;
+            background: #c41730;
         }
 
         .export-btn {
-            background: #2196F3;
-            color: white;
-            border: none;
+            background: white;
+            color: #E31937;
+            border: 1px solid #E31937;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             margin-bottom: 20px;
             margin-left: 10px;
+            font-weight: 500;
+            font-family: inherit;
         }
 
         .export-btn:hover {
-            background: #1976D2;
+            background: #E31937;
+            color: white;
         }
 
         .export-btn:disabled {
             background: #ccc;
+            border-color: #ccc;
+            color: #888;
             cursor: not-allowed;
         }
 
         .config-box {
             background: #fff3cd;
             border: 1px solid #ffc107;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
 
@@ -167,9 +197,9 @@
 
         .filter-box {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             margin-bottom: 20px;
             display: flex;
             flex-wrap: wrap;
@@ -180,57 +210,64 @@
         .filter-box label {
             font-weight: 600;
             color: #333;
+            font-size: 14px;
         }
 
         .filter-box input[type="date"] {
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 14px;
             font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .filter-box input[type="date"]:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+            border-color: #E31937;
         }
 
         .filter-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #E31937;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.2s ease;
+            font-weight: 500;
+            font-family: inherit;
         }
 
         .filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            background: #c41730;
         }
 
         .filter-info {
             color: #666;
             font-size: 13px;
             width: 100%;
+            margin-top: 10px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            font-weight: 500;
         }
     </style>
-    <!-- SheetJS for Excel export -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>📊 Quản lý dữ liệu khách hàng</h1>
+        <div class="header">
+            <h1>Quản lý dữ liệu khách hàng</h1>
+            <p class="subtitle">Agribank Chi nhánh Thọ Xuân</p>
+        </div>
 
         <div id="configMessage" class="config-box" style="display: none;">
-            ⚠️ <strong>Chưa cấu hình Base ID!</strong><br>
+            <strong>Chưa cấu hình Base ID!</strong><br>
             Vui lòng cập nhật <code>baseId</code> trong file <code>admin.html</code>.
-            Xem hướng dẫn trong <a href="README.md">README.md</a>.
         </div>
 
         <div class="stats">
@@ -244,19 +281,19 @@
             </div>
         </div>
 
-        <button class="refresh-btn" onclick="loadData()">🔄 Làm mới dữ liệu</button>
-        <button class="export-btn" id="exportBtn" onclick="exportToExcel()" disabled>📥 Xuất Excel (.xls)</button>
+        <button class="refresh-btn" onclick="loadData()">Làm mới dữ liệu</button>
+        <button class="export-btn" id="exportBtn" onclick="exportToExcel()" disabled>Xuất Excel</button>
 
         <div class="filter-box">
-            <label>📅 Từ ngày:</label>
+            <label>Từ ngày:</label>
             <input type="date" id="fromDate" onchange="applyDateFilter()">
             <label>Đến ngày:</label>
             <input type="date" id="toDate" onchange="applyDateFilter()">
-            <button class="filter-btn" onclick="resetDateFilter()">↩️ Đặt lại</button>
+            <button class="filter-btn" onclick="resetDateFilter()">Đặt lại</button>
             <div class="filter-info" id="filterInfo"></div>
         </div>
 
-        <div id="loading" class="loading">Đang tải dữ liệu...⏳</div>
+        <div id="loading" class="loading">Đang tải dữ liệu...</div>
         <div id="error" class="error" style="display: none;"></div>
 
         <div id="tableContainer" style="display: none;">
@@ -278,36 +315,32 @@
         </div>
 
         <a href="index.html" class="back-link">← Quay lại trang đăng ký</a>
+        
+        <div class="footer">
+            Agribank Thọ Xuân 2026
+        </div>
     </div>
 
     <script>
-        // Store data for export
         let customerData = [];
         let filteredData = [];
         
-        // Format number with comma as thousands separator
         function formatNumberWithComma(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-        // Initialize date filters
         function initializeDateFilters() {
             const today = new Date();
             const sevenDaysAgo = new Date(today);
             sevenDaysAgo.setDate(today.getDate() - 7);
-
-            // Format date as YYYY-MM-DD for input
-            const formatDate = (date) => {
-                return date.toISOString().split('T')[0];
-            };
-
+            
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            
             document.getElementById('toDate').value = formatDate(today);
             document.getElementById('fromDate').value = formatDate(sevenDaysAgo);
-
             updateFilterInfo();
         }
 
-        // Apply date filter
         function applyDateFilter() {
             const fromDateStr = document.getElementById('fromDate').value;
             const toDateStr = document.getElementById('toDate').value;
@@ -317,7 +350,6 @@
             } else {
                 const fromDate = new Date(fromDateStr);
                 fromDate.setHours(0, 0, 0, 0);
-
                 const toDate = new Date(toDateStr);
                 toDate.setHours(23, 59, 59, 999);
 
@@ -331,13 +363,11 @@
             renderTable(filteredData);
         }
 
-        // Reset date filter
         function resetDateFilter() {
             initializeDateFilters();
             applyDateFilter();
         }
 
-        // Update filter info text
         function updateFilterInfo() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
@@ -348,13 +378,12 @@
                     const [year, month, day] = dateStr.split('-');
                     return `${day}/${month}/${year}`;
                 };
-                infoDiv.innerHTML = `📊 Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng từ <strong>${formatDisplay(fromDate)}</strong> đến <strong>${formatDisplay(toDate)}</strong>`;
+                infoDiv.innerHTML = `Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng từ <strong>${formatDisplay(fromDate)}</strong> đến <strong>${formatDisplay(toDate)}</strong>`;
             } else {
                 infoDiv.innerHTML = '';
             }
         }
 
-        // Render table with data
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -362,7 +391,6 @@
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu trong khoảng thờii gian này</td></tr>';
             } else {
-                // Sort by createdTime manually (newest first)
                 data.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
                 data.forEach((record, index) => {
@@ -393,7 +421,6 @@
             }
         }
 
-        // Airtable Configuration
         const AIRTABLE_CONFIG = {
             apiKey: 'patnWGs6JwKmhOfNX.23903394b7357442b9ed396470a06d3ad920a6727441fd312de9b62e55df8c91',
             baseId: 'appDsL5ChJpaePTCo',
@@ -408,10 +435,8 @@
             const configMessage = document.getElementById('configMessage');
             const exportBtn = document.getElementById('exportBtn');
 
-            // Disable export button while loading
             exportBtn.disabled = true;
 
-            // Check if baseId is configured
             if (!AIRTABLE_CONFIG.baseId) {
                 configMessage.style.display = 'block';
                 loading.style.display = 'none';
@@ -424,7 +449,6 @@
             tableContainer.style.display = 'none';
 
             try {
-                // Fetch data from Airtable - no sort parameter to avoid field name issues
                 const response = await fetch(
                     `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`,
                     {
@@ -441,17 +465,13 @@
 
                 const data = await response.json();
 
-                // Store data for export
                 customerData = data.records;
                 filteredData = data.records;
 
-                // Enable export button
                 exportBtn.disabled = false;
 
-                // Update stats (total count)
                 document.getElementById('totalCount').textContent = data.records.length;
 
-                // Count today's registrations
                 const today = new Date().toDateString();
                 const todayCount = data.records.filter(r => {
                     const date = new Date(r.createdTime);
@@ -459,9 +479,7 @@
                 }).length;
                 document.getElementById('todayCount').textContent = todayCount;
 
-                // Apply date filter and render
                 applyDateFilter();
-
                 tableContainer.style.display = 'block';
 
             } catch (err) {
@@ -473,7 +491,6 @@
             }
         }
 
-        // Export to Excel function
         function exportToExcel() {
             const dataToExport = filteredData.length > 0 ? filteredData : customerData;
 
@@ -482,7 +499,6 @@
                 return;
             }
 
-            // Prepare data for Excel
             const excelData = dataToExport.map((record, index) => {
                 const fields = record.fields;
                 let loaiDichVu = fields['Loại dịch vụ'] || 'N/A';
@@ -490,7 +506,6 @@
                     loaiDichVu = loaiDichVu.join(', ');
                 }
 
-                // Export So tien as raw number for Excel calculations
                 const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']) : 0;
 
                 return {
@@ -504,12 +519,10 @@
                 };
             });
 
-            // Create worksheet
             const ws = XLSX.utils.json_to_sheet(excelData);
 
-            // Set column widths
             ws['!cols'] = [
-                { wch: 25 },  // ID
+                { wch: 8 },   // STT
                 { wch: 20 },  // Loại dịch vụ
                 { wch: 18 },  // Số tài khoản
                 { wch: 15 },  // Số tiền
@@ -518,22 +531,16 @@
                 { wch: 20 }   // Ngày đăng ký
             ];
 
-            // Create workbook
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Danh sách KH');
 
-            // Generate filename with current date
             const today = new Date().toISOString().split('T')[0];
             const filename = `Danh_sach_KH_${today}.xlsx`;
 
-            // Download file
             XLSX.writeFile(wb, filename);
         }
 
-        // Load data on page load
         loadData();
-
-        // Initialize date filters
         initializeDateFilters();
     </script>
 </body>
