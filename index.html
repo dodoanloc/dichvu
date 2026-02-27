@@ -504,6 +504,8 @@
             try {
                 // Check for duplicate: Same account number + same service type
                 const filterFormula = `AND({Số tài khoản} = "${accountNumber}", {Loại dịch vụ} = "${loaiDichVu}")`;
+                console.log('Checking duplicate with formula:', filterFormula);
+                
                 const checkResponse = await fetch(
                     `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}?filterByFormula=${encodeURIComponent(filterFormula)}&maxRecords=1`,
                     {
@@ -514,10 +516,13 @@
                 );
                 
                 if (!checkResponse.ok) {
-                    throw new Error('Không thể kiểm tra dữ liệu');
+                    const errorText = await checkResponse.text();
+                    console.error('Check duplicate error:', errorText);
+                    throw new Error('Không thể kiểm tra dữ liệu: ' + errorText);
                 }
                 
                 const checkData = await checkResponse.json();
+                console.log('Check duplicate result:', checkData);
                 
                 if (checkData.records.length > 0) {
                     messageDiv.className = 'message error';
@@ -541,6 +546,8 @@
                     }
                 };
                 
+                console.log('Submitting data:', formData);
+                
                 // Submit to Airtable
                 const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableId}`, {
                     method: 'POST',
@@ -551,7 +558,11 @@
                     body: JSON.stringify(formData)
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Success response:', responseData);
                     // Save staff selection to localStorage
                     const savedStaff = document.getElementById('ten_can_bo').value;
                     localStorage.setItem('ten_can_bo', savedStaff);
@@ -569,15 +580,13 @@
                 } else {
                     const errorData = await response.json();
                     console.error('Airtable error:', errorData);
+                    console.error('Response status:', response.status);
                     
                     let errorMsg = 'Lỗi kết nối';
                     if (errorData.error) {
-                        if (errorData.error.type === 'INVALID_PERMISSIONS') {
-                            errorMsg = 'Token không có quyền ghi dữ liệu.';
-                        } else if (errorData.error.type === 'NOT_FOUND') {
-                            errorMsg = 'Không tìm thấy table.';
-                        } else {
-                            errorMsg = errorData.error.message || 'Lỗi không xác định';
+                        errorMsg = errorData.error.message || 'Lỗi không xác định';
+                        if (errorData.error.type) {
+                            errorMsg += ` (${errorData.error.type})`;
                         }
                     }
                     throw new Error(errorMsg);
