@@ -540,7 +540,7 @@
                     fields: {
                         'Loại dịch vụ': loaiDichVu,
                         'Số tài khoản': accountNumber,
-                        'Số tiền': parseInt(document.getElementById('so_tien').value) || 0,
+                        'Số tiền': document.getElementById('so_tien').value.trim(),  // Gửi dạng string
                         'Tên khách hàng': document.getElementById('customer_name').value || '',
                         'Tên cán bộ': document.getElementById('ten_can_bo').value
                     }
