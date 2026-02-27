@@ -490,7 +490,8 @@
                     loaiDichVu = loaiDichVu.join(', ');
                 }
 
-                const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
+                // Export So tien as raw number for Excel calculations
+                const soTien = fields['Số tiền'] ? parseInt(fields['Số tiền']) : 0;
 
                 return {
                     'STT': index + 1,
