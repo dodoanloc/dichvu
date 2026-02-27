@@ -380,8 +380,7 @@
                     name="so_tien" 
                     placeholder="Nhập số tiền..." 
                     required
-                    pattern="[0-9]+"
-                    title="Vui lòng chỉ nhập số"
+                    oninput="formatCurrency(this)"
                 >
             </div>
             
@@ -465,6 +464,24 @@
             tableName: 'Table 1'
         };
         
+        // Format currency input with thousands separator
+        function formatCurrency(input) {
+            // Remove all non-digit characters
+            let value = input.value.replace(/\D/g, '');
+            
+            // Format with thousands separator
+            if (value) {
+                value = parseInt(value).toLocaleString('vi-VN');
+            }
+            
+            input.value = value;
+        }
+        
+        // Parse currency string back to number
+        function parseCurrency(value) {
+            return parseInt(value.replace(/\./g, '')) || 0;
+        }
+        
         // Load saved staff selection from localStorage
         document.addEventListener('DOMContentLoaded', function() {
             const savedStaff = localStorage.getItem('ten_can_bo');
@@ -540,7 +557,7 @@
                     fields: {
                         'Loại dịch vụ': loaiDichVu,
                         'Số tài khoản': accountNumber,
-                        'Số tiền': document.getElementById('so_tien').value.trim(),  // Gửi dạng string
+                        'Số tiền': parseCurrency(document.getElementById('so_tien').value),
                         'Tên khách hàng': document.getElementById('customer_name').value || '',
                         'Tên cán bộ': document.getElementById('ten_can_bo').value
                     }
