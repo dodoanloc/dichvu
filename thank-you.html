@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký thành công</title>
+    <title>Đăng ký thành công - Agribank</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,103 +14,117 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .logo-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .container {
             background: white;
-            padding: 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px 50px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             width: 100%;
-            max-width: 450px;
+            max-width: 520px;
             text-align: center;
-        }
-        
-        .success-icon {
-            font-size: 80px;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        
-        p {
-            color: #666;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        
-        .back-link {
-            display: inline-block;
-            padding: 14px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .back-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            border-top: 4px solid #E31937;
         }
         
         .check-mark {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: #4CAF50;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 25px;
+            margin: 0 auto 30px;
             animation: scaleIn 0.5s ease;
         }
         
         .check-mark::after {
             content: '✓';
             color: white;
-            font-size: 40px;
+            font-size: 48px;
             font-weight: bold;
         }
         
         @keyframes scaleIn {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        h1 {
+            color: #1a1a2e;
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        p {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            padding: 16px 35px;
+            background: #E31937;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 17px;
+            transition: all 0.2s ease;
+        }
+        
+        .back-link:hover {
+            background: #c41730;
+            box-shadow: 0 4px 12px rgba(227, 25, 55, 0.3);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
+    <img src="images/logo.jpg" alt="Agribank Logo" class="logo-img">
+    
     <div class="container">
         <div class="check-mark"></div>
         <h1>Đăng ký thành công!</h1>
         
         <p>
-            Cảm ơn bạn đã đăng ký thông tin. <br>
-            Chúng tôi sẽ liên hệ với bạn trong thờì gian sớm nhất.
+            Cảm ơn bạn đã đăng ký thông tin.<br>
+            Dữ liệu đã được lưu vào hệ thống.
         </p>
         
         <a href="index.html" class="back-link">← Quay lại trang đăng ký</a>
+    </div>
+    
+    <div class="footer">
+        Agribank Thọ Xuân 2026
     </div>
 </body>
 </html>
