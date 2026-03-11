@@ -2,8 +2,8 @@
 
 _Learn about the person you're helping. Update this as you go._
 
-- **Name:**
-- **What to call them:**
+- **Name:** Loc Do
+- **What to call them:** Anh
 - **Pronouns:** _(optional)_
 - **Timezone:**
 - **Notes:** Ưu tiên giao tiếp hoàn toàn bằng tiếng Việt. Xưng hô em/anh.
