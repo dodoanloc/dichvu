@@ -62,6 +62,7 @@
         
         .form-group {
             margin-bottom: 24px;
+            transition: all 0.3s ease;
         }
         
         label {
@@ -175,16 +176,13 @@
             font-weight: 500;
         }
         
-        /* Responsive */
         @media (max-width: 480px) {
             body {
                 padding: 20px 15px;
             }
-            
             .container {
                 padding: 30px 20px;
             }
-            
             h1 {
                 font-size: 20px;
             }
@@ -204,7 +202,7 @@
         <form id="registrationForm">
             <div class="form-group">
                 <label for="loai_dich_vu">Loại dịch vụ <span class="required">*</span></label>
-                <select id="loai_dich_vu" name="loai_dich_vu" required>
+                <select id="loai_dich_vu" name="loai_dich_vu" required onchange="toggleFields()">
                     <option value="">-- Chọn loại dịch vụ --</option>
                     <option value="TKTT hoạt động">TKTT hoạt động</option>
                     <option value="eBanking">eBanking</option>
@@ -224,9 +222,9 @@
                 <input type="text" id="account_number" name="account_number" placeholder="Nhập số tài khoản/nickname" required>
             </div>
             
-            <div class="form-group">
-                <label for="so_tien">Số tiền (đồng) <span class="required">*</span></label>
-                <input type="text" id="so_tien" name="so_tien" placeholder="Nhập số 0 đối với chỉ tiêu TKTT/eBanking/ĐV trả lương" required oninput="formatCurrency(this)">
+            <div class="form-group" id="group_so_tien" style="display: none;">
+                <label for="so_tien" id="label_so_tien">Số tiền (đồng) <span class="required">*</span></label>
+                <input type="text" id="so_tien" name="so_tien" placeholder="Nhập số tiền..." oninput="formatCurrency(this)">
             </div>
             
             <div class="form-group">
@@ -315,6 +313,41 @@
         function parseCurrency(value) {
             return parseInt(value.replace(/,/g, '')) || 0;
         }
+
+        // -----------------------------------------------------
+        // HÀM MỚI: Ẩn/hiện và đổi tên trường Số tiền/Số lượng
+        // -----------------------------------------------------
+        function toggleFields() {
+            const loaiDichVu = document.getElementById('loai_dich_vu').value;
+            const groupSoTien = document.getElementById('group_so_tien');
+            const labelSoTien = document.getElementById('label_so_tien');
+            const inputSoTien = document.getElementById('so_tien');
+
+            // Các loại dịch vụ bắt buộc nhập Số tiền
+            const listCanSoTien = ["Bảo an tài khoản", "Bảo an chủ thẻ", "FWD", "Số đẹp", "Khác"];
+
+            if (listCanSoTien.includes(loaiDichVu)) {
+                // Hiển thị trường Số tiền
+                groupSoTien.style.display = 'block';
+                labelSoTien.innerHTML = 'Số tiền (đồng) <span class="required">*</span>';
+                inputSoTien.required = true;
+                inputSoTien.placeholder = 'Nhập số tiền...';
+            } 
+            else if (loaiDichVu === "Đơn vị trả lương") {
+                // Hiển thị trường Số lượng
+                groupSoTien.style.display = 'block';
+                labelSoTien.innerHTML = 'Số lượng tài khoản lương <span class="required">*</span>';
+                inputSoTien.required = true;
+                inputSoTien.placeholder = 'Nhập số lượng...';
+            } 
+            else {
+                // Ẩn trường này đi đối với TKTT hoạt động, eBanking, Hóa đơn điện nước, Nickname
+                groupSoTien.style.display = 'none';
+                inputSoTien.required = false; // Bỏ bắt buộc nhập
+                inputSoTien.value = '';       // Xóa trắng dữ liệu thừa
+            }
+        }
+        // -----------------------------------------------------
         
         // Load saved staff selection from localStorage
         document.addEventListener('DOMContentLoaded', function() {
@@ -328,6 +361,8 @@
                     }
                 }
             }
+            // Khởi chạy hàm ẩn/hiện ngay khi vừa tải trang xong
+            toggleFields();
         });
         
         // Form submission handler
@@ -340,6 +375,7 @@
             if (!AIRTABLE_CONFIG.baseId) {
                 messageDiv.className = 'message error';
                 messageDiv.textContent = '⚠️ Vui lòng cấu hình Base ID trong mã nguồn.';
+                messageDiv.style.display = 'block';
                 return;
             }
             
@@ -350,6 +386,7 @@
             submitBtn.textContent = 'Đang kiểm tra...';
             
             try {
+                // Check if account already registered this service
                 const filterFormula = `AND({Số tài khoản} = "${accountNumber}", {Loại dịch vụ} = "${loaiDichVu}")`;
                 
                 const checkResponse = await fetch(
@@ -369,6 +406,7 @@
                 
                 if (checkData.records.length > 0) {
                     messageDiv.className = 'message error';
+                    messageDiv.style.display = 'block';
                     messageDiv.innerHTML = `Số tài khoản <strong>${accountNumber}</strong> đã đăng ký "${loaiDichVu}" rồi!<br>Vui lòng chọn loại dịch vụ khác.`;
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Đăng ký';
@@ -381,6 +419,7 @@
                     fields: {
                         'Loại dịch vụ': loaiDichVu,
                         'Số tài khoản': accountNumber,
+                        // Dù là "Số tiền" hay "Số lượng", đều parseCurrency và lưu vào Airtable
                         'Số tiền': parseCurrency(document.getElementById('so_tien').value),
                         'Tên khách hàng': document.getElementById('customer_name').value || '',
                         'Tên cán bộ': document.getElementById('ten_can_bo').value
@@ -401,9 +440,13 @@
                     localStorage.setItem('ten_can_bo', savedStaff);
                     
                     messageDiv.className = 'message success';
+                    messageDiv.style.display = 'block';
                     messageDiv.innerHTML = '<strong>Đăng ký thành công!</strong><br>Thông tin đã được lưu.';
                     document.getElementById('registrationForm').reset();
                     document.getElementById('ten_can_bo').value = savedStaff;
+                    
+                    // Gọi hàm reset ẩn/hiện trường số tiền sau khi reset form
+                    toggleFields(); 
                     
                     setTimeout(() => {
                         window.location.href = 'thank-you.html';
@@ -418,10 +461,13 @@
                 }
             } catch (error) {
                 messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
                 messageDiv.textContent = '❌ ' + error.message;
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Đăng ký';
+                if(submitBtn.textContent !== 'Đang lưu...') {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Đăng ký';
+                }
             }
         });
     </script>
