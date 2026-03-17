@@ -229,18 +229,20 @@
             font-size: 14px;
         }
 
-        /* Đã gộp CSS cho cả ô date và ô text tìm kiếm */
+        /* Định dạng chung cho input date và select dropdown */
         .filter-box input[type="date"],
-        .filter-box input[type="text"] {
+        .filter-box select {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 14px;
             font-family: inherit;
+            background-color: white;
+            cursor: pointer;
         }
 
         .filter-box input[type="date"]:focus,
-        .filter-box input[type="text"]:focus {
+        .filter-box select:focus {
             outline: none;
             border-color: #E31937;
         }
@@ -265,6 +267,45 @@
             font-size: 13px;
             width: 100%;
             margin-top: 10px;
+        }
+
+        /* Thêm CSS cho phần phân trang (Pagination) */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .page-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .page-btn:disabled {
+            background: #f9f9f9;
+            color: #aaa;
+            cursor: not-allowed;
+            border-color: #eee;
+        }
+
+        .page-info {
+            font-weight: 600;
+            color: #E31937;
         }
 
         .footer {
@@ -312,7 +353,51 @@
             <input type="date" id="toDate" onchange="applyFilters()">
             
             <label>Tên cán bộ:</label>
-            <input type="text" id="staffName" placeholder="Nhập tên..." oninput="applyFilters()">
+            <select id="staffName" onchange="applyFilters()">
+                <option value="">-- Tất cả cán bộ --</option>
+                <option value="Đàm Thị Thu Phương">Đàm Thị Thu Phương</option>
+                <option value="Đặng Thị Hảo">Đặng Thị Hảo</option>
+                <option value="Đỗ Doãn Lộc">Đỗ Doãn Lộc</option>
+                <option value="Đỗ Quang Huy">Đỗ Quang Huy</option>
+                <option value="Đỗ Thị Ngọc Anh">Đỗ Thị Ngọc Anh</option>
+                <option value="Đỗ Thị Trang">Đỗ Thị Trang</option>
+                <option value="Đỗ Tuấn Anh">Đỗ Tuấn Anh</option>
+                <option value="Đỗ Tuấn Minh">Đỗ Tuấn Minh</option>
+                <option value="Đỗ Văn Nam">Đỗ Văn Nam</option>
+                <option value="Doãn Thị Dịu">Doãn Thị Dịu</option>
+                <option value="Hà Sĩ Dũng">Hà Sĩ Dũng</option>
+                <option value="Hoàng Thị Lê">Hoàng Thị Lê</option>
+                <option value="Hoàng Thị Minh">Hoàng Thị Minh</option>
+                <option value="Lê Nam Phương">Lê Nam Phương</option>
+                <option value="Lê Thanh Xuân">Lê Thanh Xuân</option>
+                <option value="Lê Thị Diễm Quỳnh">Lê Thị Diễm Quỳnh</option>
+                <option value="Lê Thị Giang">Lê Thị Giang</option>
+                <option value="Lê Thị Nga">Lê Thị Nga</option>
+                <option value="Lê Thị Oanh">Lê Thị Oanh</option>
+                <option value="Lê Thị Uyên">Lê Thị Uyên</option>
+                <option value="Lê Thu Phương">Lê Thu Phương</option>
+                <option value="Lê Xuân Quý">Lê Xuân Quý</option>
+                <option value="Lý Thị Ngọc Mai">Lý Thị Ngọc Mai</option>
+                <option value="Mai Thị Huyền">Mai Thị Huyền</option>
+                <option value="Mai Thị Lan Anh">Mai Thị Lan Anh</option>
+                <option value="Nguyễn Chí Thanh">Nguyễn Chí Thanh</option>
+                <option value="Nguyễn Diệu Linh">Nguyễn Diệu Linh</option>
+                <option value="Nguyễn Ngọc Tú">Nguyễn Ngọc Tú</option>
+                <option value="Nguyễn Quốc Vương Linh">Nguyễn Quốc Vương Linh</option>
+                <option value="Nguyễn Thị Hạnh">Nguyễn Thị Hạnh</option>
+                <option value="Nguyễn Thị Hòa">Nguyễn Thị Hòa</option>
+                <option value="Nguyễn Thị Như Quỳnh">Nguyễn Thị Như Quỳnh</option>
+                <option value="Nguyễn Thị Quyên">Nguyễn Thị Quyên</option>
+                <option value="Nguyễn Trịnh Phương Thảo">Nguyễn Trịnh Phương Thảo</option>
+                <option value="Nguyễn Văn Sơn">Nguyễn Văn Sơn</option>
+                <option value="Phạm Văn Khoa">Phạm Văn Khoa</option>
+                <option value="Phùng Lê Diệu Linh">Phùng Lê Diệu Linh</option>
+                <option value="Trần Thị Hồ Lan">Trần Thị Hồ Lan</option>
+                <option value="Trịnh Ngọc Nam">Trịnh Ngọc Nam</option>
+                <option value="Trịnh Quang Dũng">Trịnh Quang Dũng</option>
+                <option value="Trịnh Thị Hường">Trịnh Thị Hường</option>
+                <option value="Vũ Xuân Trường">Vũ Xuân Trường</option>
+            </select>
 
             <button class="filter-btn" onclick="resetFilters()">Đặt lại</button>
             <div class="filter-info" id="filterInfo"></div>
@@ -337,6 +422,8 @@
                 <tbody id="tableBody">
                 </tbody>
             </table>
+            
+            <div id="pagination" class="pagination"></div>
         </div>
 
         <a href="index.html" class="back-link">← Quay lại trang đăng ký</a>
@@ -349,6 +436,10 @@
     <script>
         let customerData = [];
         let filteredData = [];
+        
+        // Biến phục vụ phân trang
+        let currentPage = 1;
+        const recordsPerPage = 50; 
         
         function formatNumberWithComma(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -368,11 +459,11 @@
         function applyFilters() {
             const fromDateStr = document.getElementById('fromDate').value;
             const toDateStr = document.getElementById('toDate').value;
-            const staffNameStr = document.getElementById('staffName').value.trim().toLowerCase();
+            const staffNameStr = document.getElementById('staffName').value; // Lấy giá trị chính xác từ dropdown
 
             let tempFiltered = customerData;
 
-            // 1. Lọc theo khoảng ngày (nếu có nhập)
+            // 1. Lọc theo khoảng ngày
             if (fromDateStr && toDateStr) {
                 const fromDate = new Date(fromDateStr);
                 fromDate.setHours(0, 0, 0, 0);
@@ -385,17 +476,22 @@
                 });
             }
 
-            // 2. Lọc theo tên cán bộ (tìm kiếm tương đối)
+            // 2. Lọc theo tên cán bộ (So khớp chính xác giá trị)
             if (staffNameStr) {
                 tempFiltered = tempFiltered.filter(record => {
-                    const staffName = (record.fields['Tên cán bộ'] || '').toLowerCase();
-                    return staffName.includes(staffNameStr);
+                    const staffName = record.fields['Tên cán bộ'] || '';
+                    return staffName === staffNameStr;
                 });
             }
 
+            // Sắp xếp dữ liệu mới nhất lên đầu trước khi chia trang
+            tempFiltered.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+
             filteredData = tempFiltered;
+            currentPage = 1; // Reset về trang 1 mỗi khi lọc mới
+            
             updateFilterInfo();
-            renderTable(filteredData);
+            updateTableView(); // Cập nhật cả bảng và nút phân trang
         }
 
         function resetFilters() {
@@ -407,10 +503,10 @@
         function updateFilterInfo() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
-            const staffName = document.getElementById('staffName').value.trim();
+            const staffName = document.getElementById('staffName').value;
             const infoDiv = document.getElementById('filterInfo');
 
-            let infoText = `Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng`;
+            let infoText = `Đã tìm thấy: <strong>${filteredData.length}</strong> bản ghi`;
 
             if (fromDate && toDate) {
                 const formatDisplay = (dateStr) => {
@@ -421,47 +517,102 @@
             }
 
             if (staffName) {
-                infoText += ` do cán bộ "<strong>${staffName}</strong>" phụ trách`;
+                infoText += ` của cán bộ "<strong>${staffName}</strong>"`;
             }
 
             infoDiv.innerHTML = infoText;
         }
 
-        function renderTable(data) {
+        // Hàm tổng hợp để vẽ bảng và vẽ nút
+        function updateTableView() {
+            renderTable();
+            renderPagination();
+        }
+
+        // Hàm hiển thị dữ liệu bảng (chỉ hiển thị 50 dòng theo trang hiện tại)
+        function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            if (data.length === 0) {
+            if (filteredData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu phù hợp với bộ lọc</td></tr>';
-            } else {
-                data.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
-
-                data.forEach((record, index) => {
-                    const fields = record.fields;
-                    const date = record.createdTime
-                        ? new Date(record.createdTime).toLocaleString('vi-VN')
-                        : 'N/A';
-
-                    let loaiDichVu = fields['Loại dịch vụ'] || 'N/A';
-                    if (Array.isArray(loaiDichVu)) {
-                        loaiDichVu = loaiDichVu.join(', ');
-                    }
-
-                    const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${loaiDichVu}</td>
-                            <td>${fields['Số tài khoản'] || 'N/A'}</td>
-                            <td>${soTien}</td>
-                            <td>${fields['Tên khách hàng'] || ''}</td>
-                            <td>${fields['Tên cán bộ'] || 'N/A'}</td>
-                            <td>${date}</td>
-                        </tr>
-                    `;
-                });
+                return;
             }
+
+            // Tính toán index bắt đầu và kết thúc của trang hiện tại
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = startIndex + recordsPerPage;
+            
+            // Cắt mảng dữ liệu lấy 50 phần tử tương ứng
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+
+            paginatedData.forEach((record, idx) => {
+                const fields = record.fields;
+                const date = record.createdTime
+                    ? new Date(record.createdTime).toLocaleString('vi-VN')
+                    : 'N/A';
+
+                let loaiDichVu = fields['Loại dịch vụ'] || 'N/A';
+                if (Array.isArray(loaiDichVu)) {
+                    loaiDichVu = loaiDichVu.join(', ');
+                }
+
+                const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
+                
+                // STT nối tiếp giữa các trang
+                const stt = startIndex + idx + 1; 
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${stt}</td>
+                        <td>${loaiDichVu}</td>
+                        <td>${fields['Số tài khoản'] || 'N/A'}</td>
+                        <td>${soTien}</td>
+                        <td>${fields['Tên khách hàng'] || ''}</td>
+                        <td>${fields['Tên cán bộ'] || 'N/A'}</td>
+                        <td>${date}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Hàm hiển thị nút bấm qua lại giữa các trang
+        function renderPagination() {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+            
+            const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+            
+            // Nếu không có dữ liệu hoặc chỉ có 1 trang thì ẩn phần phân trang
+            if (totalPages <= 1) return; 
+
+            // Nút "Trang trước"
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.textContent = '← Trang trước';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => { 
+                currentPage--; 
+                updateTableView(); 
+            };
+            paginationDiv.appendChild(prevBtn);
+
+            // Thông tin trang hiện tại (VD: Trang 1 / 5)
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'page-info';
+            pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+            paginationDiv.appendChild(pageInfo);
+
+            // Nút "Trang sau"
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.textContent = 'Trang sau →';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => { 
+                currentPage++; 
+                updateTableView(); 
+            };
+            paginationDiv.appendChild(nextBtn);
         }
 
         const AIRTABLE_CONFIG = {
@@ -530,7 +681,7 @@
                 }).length;
                 document.getElementById('todayCount').textContent = todayCount;
 
-                applyFilters(); // Gọi lại hàm gộp thay vì applyDateFilter cũ
+                applyFilters(); // Tự động hiển thị và phân trang
                 tableContainer.style.display = 'block';
 
             } catch (err) {
