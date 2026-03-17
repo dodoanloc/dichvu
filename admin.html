@@ -229,7 +229,6 @@
             font-size: 14px;
         }
 
-        /* Định dạng chung cho input date và select dropdown */
         .filter-box input[type="date"],
         .filter-box select {
             padding: 8px 12px;
@@ -269,7 +268,6 @@
             margin-top: 10px;
         }
 
-        /* Thêm CSS cho phần phân trang (Pagination) */
         .pagination {
             display: flex;
             justify-content: center;
@@ -437,7 +435,6 @@
         let customerData = [];
         let filteredData = [];
         
-        // Biến phục vụ phân trang
         let currentPage = 1;
         const recordsPerPage = 50; 
         
@@ -445,25 +442,30 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
+        // CẬP NHẬT: Hàm thiết lập ngày mặc định (Đầu tháng đến Hiện tại)
         function initializeDateFilters() {
             const today = new Date();
-            const sevenDaysAgo = new Date(today);
-            sevenDaysAgo.setDate(today.getDate() - 7);
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
             
-            const formatDate = (date) => date.toISOString().split('T')[0];
+            // Hàm format ngày tháng theo Local Time (tránh lỗi múi giờ UTC)
+            const formatLocalDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
             
-            document.getElementById('toDate').value = formatDate(today);
-            document.getElementById('fromDate').value = formatDate(sevenDaysAgo);
+            document.getElementById('toDate').value = formatLocalDate(today);
+            document.getElementById('fromDate').value = formatLocalDate(firstDayOfMonth);
         }
 
         function applyFilters() {
             const fromDateStr = document.getElementById('fromDate').value;
             const toDateStr = document.getElementById('toDate').value;
-            const staffNameStr = document.getElementById('staffName').value; // Lấy giá trị chính xác từ dropdown
+            const staffNameStr = document.getElementById('staffName').value; 
 
             let tempFiltered = customerData;
 
-            // 1. Lọc theo khoảng ngày
             if (fromDateStr && toDateStr) {
                 const fromDate = new Date(fromDateStr);
                 fromDate.setHours(0, 0, 0, 0);
@@ -476,7 +478,6 @@
                 });
             }
 
-            // 2. Lọc theo tên cán bộ (So khớp chính xác giá trị)
             if (staffNameStr) {
                 tempFiltered = tempFiltered.filter(record => {
                     const staffName = record.fields['Tên cán bộ'] || '';
@@ -484,14 +485,13 @@
                 });
             }
 
-            // Sắp xếp dữ liệu mới nhất lên đầu trước khi chia trang
             tempFiltered.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
             filteredData = tempFiltered;
-            currentPage = 1; // Reset về trang 1 mỗi khi lọc mới
+            currentPage = 1; 
             
             updateFilterInfo();
-            updateTableView(); // Cập nhật cả bảng và nút phân trang
+            updateTableView(); 
         }
 
         function resetFilters() {
@@ -523,13 +523,11 @@
             infoDiv.innerHTML = infoText;
         }
 
-        // Hàm tổng hợp để vẽ bảng và vẽ nút
         function updateTableView() {
             renderTable();
             renderPagination();
         }
 
-        // Hàm hiển thị dữ liệu bảng (chỉ hiển thị 50 dòng theo trang hiện tại)
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -539,11 +537,8 @@
                 return;
             }
 
-            // Tính toán index bắt đầu và kết thúc của trang hiện tại
             const startIndex = (currentPage - 1) * recordsPerPage;
             const endIndex = startIndex + recordsPerPage;
-            
-            // Cắt mảng dữ liệu lấy 50 phần tử tương ứng
             const paginatedData = filteredData.slice(startIndex, endIndex);
 
             paginatedData.forEach((record, idx) => {
@@ -558,8 +553,6 @@
                 }
 
                 const soTien = fields['Số tiền'] ? formatNumberWithComma(parseInt(fields['Số tiền'])) : '0';
-                
-                // STT nối tiếp giữa các trang
                 const stt = startIndex + idx + 1; 
 
                 tbody.innerHTML += `
@@ -576,17 +569,14 @@
             });
         }
 
-        // Hàm hiển thị nút bấm qua lại giữa các trang
         function renderPagination() {
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
             
             const totalPages = Math.ceil(filteredData.length / recordsPerPage);
             
-            // Nếu không có dữ liệu hoặc chỉ có 1 trang thì ẩn phần phân trang
             if (totalPages <= 1) return; 
 
-            // Nút "Trang trước"
             const prevBtn = document.createElement('button');
             prevBtn.className = 'page-btn';
             prevBtn.textContent = '← Trang trước';
@@ -597,13 +587,11 @@
             };
             paginationDiv.appendChild(prevBtn);
 
-            // Thông tin trang hiện tại (VD: Trang 1 / 5)
             const pageInfo = document.createElement('span');
             pageInfo.className = 'page-info';
             pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
             paginationDiv.appendChild(pageInfo);
 
-            // Nút "Trang sau"
             const nextBtn = document.createElement('button');
             nextBtn.className = 'page-btn';
             nextBtn.textContent = 'Trang sau →';
@@ -681,7 +669,7 @@
                 }).length;
                 document.getElementById('todayCount').textContent = todayCount;
 
-                applyFilters(); // Tự động hiển thị và phân trang
+                applyFilters(); 
                 tableContainer.style.display = 'block';
 
             } catch (err) {
