@@ -229,7 +229,9 @@
             font-size: 14px;
         }
 
-        .filter-box input[type="date"] {
+        /* Đã gộp CSS cho cả ô date và ô text tìm kiếm */
+        .filter-box input[type="date"],
+        .filter-box input[type="text"] {
             padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -237,7 +239,8 @@
             font-family: inherit;
         }
 
-        .filter-box input[type="date"]:focus {
+        .filter-box input[type="date"]:focus,
+        .filter-box input[type="text"]:focus {
             outline: none;
             border-color: #E31937;
         }
@@ -303,10 +306,15 @@
 
         <div class="filter-box">
             <label>Từ ngày:</label>
-            <input type="date" id="fromDate" onchange="applyDateFilter()">
+            <input type="date" id="fromDate" onchange="applyFilters()">
+            
             <label>Đến ngày:</label>
-            <input type="date" id="toDate" onchange="applyDateFilter()">
-            <button class="filter-btn" onclick="resetDateFilter()">Đặt lại</button>
+            <input type="date" id="toDate" onchange="applyFilters()">
+            
+            <label>Tên cán bộ:</label>
+            <input type="text" id="staffName" placeholder="Nhập tên..." oninput="applyFilters()">
+
+            <button class="filter-btn" onclick="resetFilters()">Đặt lại</button>
             <div class="filter-info" id="filterInfo"></div>
         </div>
 
@@ -355,50 +363,68 @@
             
             document.getElementById('toDate').value = formatDate(today);
             document.getElementById('fromDate').value = formatDate(sevenDaysAgo);
-            updateFilterInfo();
         }
 
-        function applyDateFilter() {
+        function applyFilters() {
             const fromDateStr = document.getElementById('fromDate').value;
             const toDateStr = document.getElementById('toDate').value;
+            const staffNameStr = document.getElementById('staffName').value.trim().toLowerCase();
 
-            if (!fromDateStr || !toDateStr) {
-                filteredData = customerData;
-            } else {
+            let tempFiltered = customerData;
+
+            // 1. Lọc theo khoảng ngày (nếu có nhập)
+            if (fromDateStr && toDateStr) {
                 const fromDate = new Date(fromDateStr);
                 fromDate.setHours(0, 0, 0, 0);
                 const toDate = new Date(toDateStr);
                 toDate.setHours(23, 59, 59, 999);
 
-                filteredData = customerData.filter(record => {
+                tempFiltered = tempFiltered.filter(record => {
                     const recordDate = new Date(record.createdTime);
                     return recordDate >= fromDate && recordDate <= toDate;
                 });
             }
 
+            // 2. Lọc theo tên cán bộ (tìm kiếm tương đối)
+            if (staffNameStr) {
+                tempFiltered = tempFiltered.filter(record => {
+                    const staffName = (record.fields['Tên cán bộ'] || '').toLowerCase();
+                    return staffName.includes(staffNameStr);
+                });
+            }
+
+            filteredData = tempFiltered;
             updateFilterInfo();
             renderTable(filteredData);
         }
 
-        function resetDateFilter() {
+        function resetFilters() {
             initializeDateFilters();
-            applyDateFilter();
+            document.getElementById('staffName').value = '';
+            applyFilters();
         }
 
         function updateFilterInfo() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
+            const staffName = document.getElementById('staffName').value.trim();
             const infoDiv = document.getElementById('filterInfo');
+
+            let infoText = `Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng`;
 
             if (fromDate && toDate) {
                 const formatDisplay = (dateStr) => {
                     const [year, month, day] = dateStr.split('-');
                     return `${day}/${month}/${year}`;
                 };
-                infoDiv.innerHTML = `Đang hiển thị: <strong>${filteredData.length}</strong> khách hàng từ <strong>${formatDisplay(fromDate)}</strong> đến <strong>${formatDisplay(toDate)}</strong>`;
-            } else {
-                infoDiv.innerHTML = '';
+                infoText += ` từ <strong>${formatDisplay(fromDate)}</strong> đến <strong>${formatDisplay(toDate)}</strong>`;
             }
+
+            if (staffName) {
+                infoText += ` do cán bộ "<strong>${staffName}</strong>" phụ trách`;
+            }
+
+            infoDiv.innerHTML = infoText;
         }
 
         function renderTable(data) {
@@ -406,7 +432,7 @@
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu trong khoảng thời gian này</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="no-data">Không có dữ liệu phù hợp với bộ lọc</td></tr>';
             } else {
                 data.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
 
@@ -488,11 +514,10 @@
 
                     const data = await response.json();
                     allRecords = allRecords.concat(data.records);
-                    offset = data.offset; // Cập nhật offset để lấy trang tiếp theo
-                } while (offset); // Lặp cho đến khi hết offset
+                    offset = data.offset; 
+                } while (offset); 
 
                 customerData = allRecords;
-                filteredData = allRecords;
 
                 exportBtn.disabled = false;
 
@@ -505,7 +530,7 @@
                 }).length;
                 document.getElementById('todayCount').textContent = todayCount;
 
-                applyDateFilter();
+                applyFilters(); // Gọi lại hàm gộp thay vì applyDateFilter cũ
                 tableContainer.style.display = 'block';
 
             } catch (err) {
@@ -548,13 +573,13 @@
             const ws = XLSX.utils.json_to_sheet(excelData);
 
             ws['!cols'] = [
-                { wch: 8 },   // STT
-                { wch: 20 },  // Loại dịch vụ
-                { wch: 18 },  // Số tài khoản
-                { wch: 15 },  // Số tiền
-                { wch: 30 },  // Tên khách hàng
-                { wch: 25 },  // Tên cán bộ
-                { wch: 20 }   // Ngày đăng ký
+                { wch: 8 },   
+                { wch: 20 },  
+                { wch: 18 },  
+                { wch: 15 },  
+                { wch: 30 },  
+                { wch: 25 },  
+                { wch: 20 }   
             ];
 
             const wb = XLSX.utils.book_new();
@@ -566,8 +591,8 @@
             XLSX.writeFile(wb, filename);
         }
 
-        loadData();
         initializeDateFilters();
+        loadData();
     </script>
 </body>
 </html>
